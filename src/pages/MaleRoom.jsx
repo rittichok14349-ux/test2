@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-
+import Sidebar from "../components/Sidebar"
 const rooms = [
   {
     id: 1,
@@ -54,7 +54,8 @@ function MaleRoom() {
   const navigate = useNavigate();
 
   return (
-    <div className="p-6">
+    <div className="p-9 mt-10">
+      <Sidebar />
       <h2 className="text-xl font-bold mb-4">ห้องพักแบบคู่ (ชาย)</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

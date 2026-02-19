@@ -3,18 +3,18 @@ import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
-    const [openRoom, setOpenRoom] = useState(false); // state เมนูย่อย
-    const [openSingle, setOpenSingle] = useState(false);
-  const [openGroup, setOpenGroup] = useState(false);
+  const [openRoom, setOpenRoom] = useState(false);
+  const [openDouble, setOpenDouble] = useState(false); // ห้องคู่
+  const [openGroup, setOpenGroup] = useState(false);   // ห้องรวม
 
   return (
     <>
-      {/* ปุ่มสามขีด */}
+      {/* Toggle button */}
       <button
         onClick={() => setOpen(!open)}
         className="fixed top-20 left-4 z-50 bg-gray-700 text-white p-2 rounded-md"
       >
-        <i className="bi bi-list text-2xl"></i>
+        ☰
       </button>
 
       {/* Overlay */}
@@ -31,53 +31,39 @@ const Sidebar = () => {
         transform transition-transform duration-300
         ${open ? "translate-x-0" : "-translate-x-full"}`}
       >
-        {/* Logo */}
-        <div className="p-4 flex items-center gap-2 border-b border-gray-600">
-          <i className="bi bi-building text-xl"></i>
-          <span className="font-bold">Dormitory</span>
-        </div>
+        <div className="p-4 font-bold border-b">Dormitory</div>
 
-        {/* Menu */}
         <ul className="p-4 space-y-3">
+
           <li>
-            <Link className="flex items-center gap-3 bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">
-              <i className="bi bi-house"></i> หน้าหลัก
+            <Link to="/" className="block bg-gray-200 text-black px-4 py-2 rounded">
+              หน้าหลัก
             </Link>
           </li>
-          <li>
-            <Link className="flex items-center gap-3 bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">
-              <i className="bi bi-telephone"></i> ติดต่อเรา
-            </Link>
-          </li>
-          <li>
-            <Link className="flex items-center gap-3 bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">
-              <i className="bi bi-geo-alt"></i> แผนที่
-            </Link>
-          </li>
+
           <li>
             <button
               onClick={() => setOpenRoom(!openRoom)}
-              className="w-full flex items-center justify-between gap-3 bg-gray-200 text-black px-1 py-2 rounded hover:bg-gray-300">
-            
-            <Link className="flex items-center gap-2 bg-gray-200 text-black px-4 py-1 rounded hover:bg-gray-300">
-              <i className="bi bi-door-open"></i> ประเภทห้อง
-            </Link>
-            <i className={`bi ${openRoom ? "bi-chevron-up" : "bi-chevron-down"}`}></i>
+              className="w-full flex justify-between bg-gray-200 text-black px-4 py-2 rounded"
+            >
+              ประเภทห้อง
+              <span>{openRoom ? "▲" : "▼"}</span>
             </button>
+
             {openRoom && (
               <ul className="ml-3 mt-2 space-y-2">
 
-                                 {/* ห้องคู่ */}
+                {/* ห้องคู่ */}
                 <li>
                   <button
-                    onClick={() => setOpenSingle(!openSingle)}
+                    onClick={() => setOpenDouble(!openDouble)}
                     className="w-full flex justify-between bg-gray-100 text-black px-4 py-2 rounded"
                   >
                     🏠 ห้องคู่
-                    <i className={`bi ${openSingle ? "bi-chevron-up" : "bi-chevron-down"}`}></i>
+                    <span>{openDouble ? "▲" : "▼"}</span>
                   </button>
 
-                  {openSingle && (
+                  {openDouble && (
                     <ul className="ml-6 mt-2 space-y-2">
                       <li>
                         <Link to="/male" className="block bg-white text-black px-4 py-2 rounded">
@@ -85,7 +71,7 @@ const Sidebar = () => {
                         </Link>
                       </li>
                       <li>
-                        <Link to="/double-room-female" className="block bg-white text-black px-4 py-2 rounded">
+                        <Link to="/female" className="block bg-white text-black px-4 py-2 rounded">
                           ห้องคู่หญิง
                         </Link>
                       </li>
@@ -100,18 +86,18 @@ const Sidebar = () => {
                     className="w-full flex justify-between bg-gray-100 text-black px-4 py-2 rounded"
                   >
                     🏢 ห้องรวม
-                    <i className={`bi ${openGroup ? "bi-chevron-up" : "bi-chevron-down"}`}></i>
+                    <span>{openGroup ? "▲" : "▼"}</span>
                   </button>
 
                   {openGroup && (
                     <ul className="ml-6 mt-2 space-y-2">
                       <li>
-                        <Link className="block bg-white text-black px-4 py-2 rounded">
+                        <Link to="/double-room-male" className="block bg-white text-black px-4 py-2 rounded">
                           ห้องรวมชาย
                         </Link>
                       </li>
                       <li>
-                        <Link className="block bg-white text-black px-4 py-2 rounded">
+                        <Link to="/double-room-female" className="block bg-white text-black px-4 py-2 rounded">
                           ห้องรวมหญิง
                         </Link>
                       </li>
@@ -122,13 +108,8 @@ const Sidebar = () => {
               </ul>
             )}
           </li>
+
         </ul>
-        {/* Logout */}
-        <div className="absolute bottom-6 left-4 right-4">
-          <button className="w-full bg-gray-200 text-black py-2 rounded hover:bg-gray-300">
-            Logout
-          </button>
-        </div>
       </div>
     </>
   );

@@ -40,20 +40,11 @@ const Sidebar = () => {
         {/* Menu */}
         <ul className="p-4 space-y-3">
           <li>
-            <Link className="flex items-center gap-3 bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">
+            <Link to="/home"className="flex items-center gap-3 bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">
               <i className="bi bi-house"></i> หน้าหลัก
             </Link>
           </li>
-          <li>
-            <Link className="flex items-center gap-3 bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">
-              <i className="bi bi-telephone"></i> ติดต่อเรา
-            </Link>
-          </li>
-          <li>
-            <Link className="flex items-center gap-3 bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">
-              <i className="bi bi-geo-alt"></i> แผนที่
-            </Link>
-          </li>
+          
           <li>
             <button
               onClick={() => setOpenRoom(!openRoom)}
@@ -85,7 +76,7 @@ const Sidebar = () => {
                         </Link>
                       </li>
                       <li>
-                        <Link to="/double-room-female" className="block bg-white text-black px-4 py-2 rounded">
+                        <Link to="/female" className="block bg-white text-black px-4 py-2 rounded">
                           ห้องคู่หญิง
                         </Link>
                       </li>
@@ -106,12 +97,12 @@ const Sidebar = () => {
                   {openGroup && (
                     <ul className="ml-6 mt-2 space-y-2">
                       <li>
-                        <Link className="block bg-white text-black px-4 py-2 rounded">
+                        <Link to="/double-room-male"className="block bg-white text-black px-4 py-2 rounded">
                           ห้องรวมชาย
                         </Link>
                       </li>
                       <li>
-                        <Link className="block bg-white text-black px-4 py-2 rounded">
+                        <Link to="/double-room-female"className="block bg-white text-black px-4 py-2 rounded">
                           ห้องรวมหญิง
                         </Link>
                       </li>

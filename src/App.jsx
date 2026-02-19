@@ -3,18 +3,16 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
-import AdminHome from'./pages/admin/AdminHome';
+import AdminHome from './pages/admin/AdminHome';
 import Members from './pages/Members';
-import Products from './pages/Products';
-import Orders from './pages/Orders';
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Sidebar from "./components/Sidebar";
-import DoubleRoomMale from "./pages/DoubleRoomMale";
-import DoubleRoomFemale from "./pages/DoubleRoomFemale";
+import MaleDormRoom from "./pages/DoubleRoomMale";
+import FemaleDormRoom from "./pages/DoubleRoomFemale";
 import MaleRoom from './pages/MaleRoom';
 import FemaleRoom from './pages/FemaleRoom';
-import RoomDetail from "./pages/RoomDetail";  
+import RoomDetail from "./pages/RoomDetail";
 import AddRoom from "./pages/admin/AddRoom";
 
 
@@ -32,20 +30,18 @@ const App = () => {
               <Route path="/home" element={<Home />} />
               <Route path="/" element={<Home />} />
               <Route path="/members" element={<Members />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/orders" element={<Orders />} />
               <Route path="/register" element={<Register />} />
               <Route path="/Login" element={<Login />} />
-              <Route path="/double-room-male" element={<DoubleRoomMale />} />
-              <Route path="/double-room-female" element={<DoubleRoomFemale />} />
+              <Route path="/double-room-male" element={<MaleDormRoom />} />
+              <Route path="/double-room-female" element={<FemaleDormRoom />} />
               <Route path="/male" element={<MaleRoom />} />
               <Route path="/female" element={<FemaleRoom />} />
               <Route path="/room/:id" element={<RoomDetail />} />
               <Route path="/add-room" element={<AddRoom />} />
-              
-              
-              
-              
+
+
+
+
             </Routes>
           </main>
 

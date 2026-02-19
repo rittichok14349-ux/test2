@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState,useEffect } from 'react'
 import api from '../services/api'
+
 const Members = () => {
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -28,6 +29,7 @@ const Members = () => {
 
         <>
             <div className="container mx-auto px-4 py-8">
+                
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <h1 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
                         <i className="bi bi-people-fill text-blue-600"></i>
