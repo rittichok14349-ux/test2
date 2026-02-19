@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
+import AdminHome from'./pages/admin/AdminHome';
 import Members from './pages/Members';
 import Products from './pages/Products';
 import Orders from './pages/Orders';
@@ -14,7 +15,7 @@ import DoubleRoomFemale from "./pages/DoubleRoomFemale";
 import MaleRoom from './pages/MaleRoom';
 import FemaleRoom from './pages/FemaleRoom';
 import RoomDetail from "./pages/RoomDetail";  
-import AddRoom from "./pages/AddRoom";
+import AddRoom from "./pages/admin/AddRoom";
 
 
 
@@ -27,6 +28,8 @@ const App = () => {
 
           <main className="flex-grow">
             <Routes>
+              <Route path="/admin/home" element={<AdminHome />} />
+              <Route path="/home" element={<Home />} />
               <Route path="/" element={<Home />} />
               <Route path="/members" element={<Members />} />
               <Route path="/products" element={<Products />} />

@@ -1,42 +1,47 @@
-import React, { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import axios from "axios"
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../services/authService.js";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     username: "",
     password: ""
-  })
+  });
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
-    })
-  }
+    });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        username: formData.username,
-        password: formData.password
-      })
+      // เรียก service ที่ถูกต้อง
+      const data = await loginUser(formData.username, formData.password);
 
-      alert("เข้าสู่ระบบสำเร็จ 🎉")
+      // เก็บ user ลง context
+      login(data);
 
-      // ถ้ามี token (optional)
-      localStorage.setItem("token", res.data.token)
+      alert("เข้าสู่ระบบสำเร็จ 🎉");
 
-      navigate("/") // ไปหน้า Home
+      // เช็ค role
+      if (data.role === "ADMIN") {
+        navigate("/admin/home");
+      } else {
+        navigate("/home");
+      }
 
     } catch (error) {
-      alert(error.response?.data?.message || "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")
+      alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-purple-100">
@@ -87,7 +92,7 @@ const Login = () => {
 
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
