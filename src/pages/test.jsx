@@ -47,8 +47,16 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button className="bg-blue-500 text-white w-full py-2 rounded">
-          Login
+        
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full px-4 py-2 rounded text-white font-medium transition ${loading
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-green-600 hover:bg-green-700'
+            }`}
+        >
+          {loading ? "กำลังบันทึก..." : "บันทึกห้อง"}
         </button>
       </form>
     </div>

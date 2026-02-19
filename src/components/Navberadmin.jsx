@@ -16,7 +16,12 @@ const Navbar = () => {
 
           {/* Auth Buttons */}
           <div className="flex items-center space-x-3">
-            
+            <Link
+              to="/add-room"
+              className="px-4 py-2 rounded-lg border border-white hover:bg-white hover:text-purple-600 transition font-medium" style={{ fontFamily: "Anuphan" }}
+            >
+              เพิ่มห้อง
+            </Link>
 
             <Link
               to="/register"

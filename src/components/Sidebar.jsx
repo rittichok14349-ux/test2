@@ -116,7 +116,7 @@ const Sidebar = () => {
         </ul>
         {/* Logout */}
         <div className="absolute bottom-6 left-4 right-4">
-          <button className="w-full bg-gray-200 text-black py-2 rounded hover:bg-gray-300">
+          <button  to="/" className="w-full bg-gray-200 text-black py-2 rounded hover:bg-gray-300">
             Logout
           </button>
         </div>

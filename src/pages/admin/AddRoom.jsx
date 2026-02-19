@@ -8,9 +8,12 @@ function AddRoom() {
     price: "",
     floor: "",
     description: "",
+    status: "AVAILABLE",
+    dormId: ""
   });
 
   const [imageFile, setImageFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setRoom({ ...room, [e.target.name]: e.target.value });
@@ -23,34 +26,50 @@ function AddRoom() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!room.roomNo || !room.roomType || !room.price || !room.floor || !room.dormId) {
+      alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+      return;
+    }
+
+    if (!imageFile) {
+      alert("กรุณาเลือกรูปภาพ");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("roomNo", room.roomNo);
     formData.append("roomType", room.roomType);
     formData.append("price", room.price);
     formData.append("floor", room.floor);
     formData.append("description", room.description);
-    formData.append("image", imageFile); // ไฟล์รูป
+    formData.append("status", room.status);
+    formData.append("dormId", room.dormId);
+    formData.append("image", imageFile);
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/rooms`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/room`,
+        formData
+      );
 
       alert("เพิ่มห้องสำเร็จ");
+
       setRoom({
         roomNo: "",
         roomType: "",
         price: "",
         floor: "",
         description: "",
+        status: "AVAILABLE",
+        dormId: ""
       });
       setImageFile(null);
 
     } catch (err) {
       console.error(err);
       alert("เพิ่มห้องไม่สำเร็จ");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,7 +101,25 @@ function AddRoom() {
           onChange={handleChange} value={room.floor}
           className="border p-2 w-full" />
 
-        {/* อัปโหลดไฟล์ */}
+        {/* status */}
+        <select name="status"
+          value={room.status}
+          onChange={handleChange}
+          className="border p-2 w-full">
+          <option value="AVAILABLE">ว่าง</option>
+          <option value="FULL">เต็ม</option>
+        </select>
+
+        {/* dormId */}
+        <input
+          type="number"
+          name="dormId"
+          placeholder="Dorm ID"
+          value={room.dormId}
+          onChange={handleChange}
+          className="border p-2 w-full"
+        />
+
         <input type="file" accept="image/*"
           onChange={handleImageChange}
           className="border p-2 w-full" />
@@ -91,8 +128,15 @@ function AddRoom() {
           onChange={handleChange} value={room.description}
           className="border p-2 w-full" />
 
-        <button className="bg-green-600 text-white px-4 py-2 rounded">
-          บันทึกห้อง
+       <button
+          type="submit"
+          disabled={loading}
+          className={`w-full px-4 py-2 rounded text-white font-medium transition ${loading
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-green-600 hover:bg-green-700'
+            }`}
+        >
+          {loading ? "กำลังบันทึก..." : "บันทึกห้อง"}
         </button>
       </form>
     </div>
