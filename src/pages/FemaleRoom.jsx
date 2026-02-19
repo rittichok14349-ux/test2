@@ -1,77 +1,102 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+import NavbarUser from "../components/NavbarUser";
+import { useAuth } from "../context/AuthContext";
+import { useEffect, useState } from "react";
 
 function FemaleRoom() {
   const navigate = useNavigate();
-  const [rooms, setRooms] = useState([]);
+  const { user } = useAuth();
 
-  // mock data (ใช้ก่อน รอ backend)
-  const mockRooms = [
-    {
-      id: 1,
-      code: "F201",
-      type: "ห้องคู่ (หญิง)",
-      price: 3500,
-      image: "/image/room3.jpg",
-      detail: "ห้องพัดลม มีเตียง 2 เตียง ห้องน้ำในตัว"
-    },
-    {
-      id: 2,
-      code: "F202",
-      type: "ห้องคู่ (หญิง)",
-      price: 4500,
-      image: "/image/room4.jpg",
-      detail: "ห้องแอร์ มี WiFi และตู้เย็น"
-    },
-    {
-      id: 3,
-      code: "F203",
-      type: "ห้องคู่ (หญิง)",
-      price: 4000,
-      image: "/image/room5.jpg",
-      detail: "ห้องแอร์ มีโต๊ะอ่านหนังสือ"
-    }
-  ];
+  const [rooms, setRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    // 🔹 ตอนนี้ยังไม่ต่อ backend ใช้ mock data ไปก่อน
-    setRooms(mockRooms);
-
-    // 🔹 เมื่อมี Backend แล้ว เปลี่ยนเป็นแบบนี้:
-    /*
-    fetch("http://localhost:3000/api/rooms/female")
-      .then(res => res.json())
-      .then(data => setRooms(data))
-      .catch(err => console.error(err));
-    */
+    fetch(`${import.meta.env.VITE_API_URL}/rooms`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error("API error " + res.status);
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data)) {
+          // ✅ กรองเฉพาะห้องผู้หญิง (roomType === 'female')
+          const femaleRooms = data.filter(
+            (room) => room.roomType === "female"
+          );
+          setRooms(femaleRooms);
+        } else {
+          setError("ข้อมูลห้องไม่ถูกต้อง");
+          setRooms([]);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("โหลดข้อมูลไม่สำเร็จ", err);
+        setError("ไม่สามารถโหลดข้อมูลห้องได้");
+        setLoading(false);
+      });
   }, []);
 
+  const handleClickRoom = (room) => {
+    if (!user) {
+      alert("กรุณาเข้าสู่ระบบก่อน");
+      return;
+    }
+
+    if (user.role === "admin") {
+      navigate(`/admin/room/${room.id}`, { state: room });
+    } else {
+      navigate(`/room/${room.id}`, { state: room });
+    }
+  };
+
+  if (loading) return <p className="p-8">กำลังโหลดข้อมูล...</p>;
+  if (error) return <p className="p-8 text-red-500">{error}</p>;
+
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">ห้องพักแบบคู่ (หญิง)</h2>
+    <>
+      <NavbarUser />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {rooms.map((room) => (
-          <div
-            key={room.id}
-            className="border rounded-lg shadow hover:scale-105 transition cursor-pointer"
-            onClick={() => navigate(`/room/${room.id}`, { state: room })}
-          >
-            <img
-              src={room.image}
-              alt={room.code}
-              className="w-full h-48 object-cover rounded-t-lg"
-            />
+      <div className="flex">
+        <Sidebar />
 
-            <div className="p-4">
-              <h3 className="font-bold text-lg">รหัสห้อง: {room.code}</h3>
-              <p>{room.type}</p>
-              <p className="text-green-600 font-semibold">฿{room.price}</p>
-            </div>
+        <div className="p-15 w-full bg-gray-100 min-h-screen">
+          <h2 className="text-3xl font-bold mb-9 border-b pb-2">
+            ห้องพักแบบคู่ (หญิง)
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {rooms.slice(0, 8).map((room) => (
+              <div
+                key={room.id}
+                onClick={() => handleClickRoom(room)}
+                className="bg-white border border-gray-300 rounded-xl shadow-md 
+                hover:shadow-xl hover:scale-105 transition duration-300 cursor-pointer"
+              >
+                <img
+                  src={`${import.meta.env.VITE_API_URL}/uploads/${room.image}`}
+                  alt={room.roomNo}
+                  className="w-full h-40 object-cover rounded-t-xl"
+                />
+
+                <div className="p-4">
+                  <h3 className="text-lg font-bold">ห้อง {room.roomNo}</h3>
+                  <p className="text-sm text-gray-600">{room.roomType}</p>
+                  <p className="text-green-600 font-semibold mt-2">
+                    ราคา {room.price} บาท
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+
+          {rooms.length === 0 && (
+            <p className="mt-4 text-gray-500">ยังไม่มีข้อมูลห้อง</p>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

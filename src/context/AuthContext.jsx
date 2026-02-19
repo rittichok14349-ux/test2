@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState(null); // { user, token }
+  const [auth, setAuth] = useState(null);
 
   useEffect(() => {
     const savedAuth = localStorage.getItem("auth");
@@ -13,10 +13,9 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (data) => {
-    // data = { token, user }
     const authData = {
       token: data.token,
-      user: data.user
+      user: data.user,
     };
 
     localStorage.setItem("auth", JSON.stringify(authData));
@@ -29,7 +28,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        auth,
+        user: auth?.user, // ✅ สำคัญ
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
