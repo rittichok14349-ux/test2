@@ -47,9 +47,16 @@ function AddRoom() {
     formData.append("image", imageFile);
 
     try {
+      setLoading(true);
+
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/room`,
-        formData
+        `${import.meta.env.VITE_API_URL}/rooms`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       alert("เพิ่มห้องสำเร็จ");
@@ -63,10 +70,11 @@ function AddRoom() {
         status: "AVAILABLE",
         dormId: ""
       });
+
       setImageFile(null);
 
     } catch (err) {
-      console.error(err);
+      console.error("ERROR:", err.response?.data || err.message);
       alert("เพิ่มห้องไม่สำเร็จ");
     } finally {
       setLoading(false);
@@ -79,13 +87,20 @@ function AddRoom() {
 
       <form onSubmit={handleSubmit} className="space-y-3">
 
-        <input name="roomNo" placeholder="รหัสห้อง"
-          onChange={handleChange} value={room.roomNo}
-          className="border p-2 w-full" />
+        <input
+          name="roomNo"
+          placeholder="รหัสห้อง"
+          onChange={handleChange}
+          value={room.roomNo}
+          className="border p-2 w-full"
+        />
 
-        <select name="roomType"
-          onChange={handleChange} value={room.roomType}
-          className="border p-2 w-full">
+        <select
+          name="roomType"
+          onChange={handleChange}
+          value={room.roomType}
+          className="border p-2 w-full"
+        >
           <option value="">เลือกประเภทห้อง</option>
           <option value="คู่ชาย">คู่ชาย</option>
           <option value="คู่หญิง">คู่หญิง</option>
@@ -93,24 +108,34 @@ function AddRoom() {
           <option value="รวมหญิง">รวมหญิง</option>
         </select>
 
-        <input type="number" name="price" placeholder="ราคา"
-          onChange={handleChange} value={room.price}
-          className="border p-2 w-full" />
+        <input
+          type="number"
+          name="price"
+          placeholder="ราคา"
+          onChange={handleChange}
+          value={room.price}
+          className="border p-2 w-full"
+        />
 
-        <input type="number" name="floor" placeholder="ชั้น"
-          onChange={handleChange} value={room.floor}
-          className="border p-2 w-full" />
+        <input
+          type="number"
+          name="floor"
+          placeholder="ชั้น"
+          onChange={handleChange}
+          value={room.floor}
+          className="border p-2 w-full"
+        />
 
-        {/* status */}
-        <select name="status"
+        <select
+          name="status"
           value={room.status}
           onChange={handleChange}
-          className="border p-2 w-full">
+          className="border p-2 w-full"
+        >
           <option value="AVAILABLE">ว่าง</option>
           <option value="FULL">เต็ม</option>
         </select>
 
-        {/* dormId */}
         <input
           type="number"
           name="dormId"
@@ -120,21 +145,29 @@ function AddRoom() {
           className="border p-2 w-full"
         />
 
-        <input type="file" accept="image/*"
+        <input
+          type="file"
+          accept="image/*"
           onChange={handleImageChange}
-          className="border p-2 w-full" />
+          className="border p-2 w-full"
+        />
 
-        <textarea name="description" placeholder="รายละเอียดห้อง"
-          onChange={handleChange} value={room.description}
-          className="border p-2 w-full" />
+        <textarea
+          name="description"
+          placeholder="รายละเอียดห้อง"
+          onChange={handleChange}
+          value={room.description}
+          className="border p-2 w-full"
+        />
 
-       <button
+        <button
           type="submit"
           disabled={loading}
-          className={`w-full px-4 py-2 rounded text-white font-medium transition ${loading
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-green-600 hover:bg-green-700'
-            }`}
+          className={`w-full px-4 py-2 rounded text-white font-medium transition ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700"
+          }`}
         >
           {loading ? "กำลังบันทึก..." : "บันทึกห้อง"}
         </button>
