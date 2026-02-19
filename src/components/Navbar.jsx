@@ -2,53 +2,39 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const Navbar = () => {
-    return (
-        <>
-            <nav className="bg-purple-600 text-white shadow-lg">
-                <div className="container mx-auto px-4">
-                    <div className="flex items-center justify-between h-16">
-                        {/* Logo */}
-                        <Link to="/" className="text-xl font-bold flex items-center gap-2">
-                            <i className="bi bi-database-fill"></i>
-                            Dormitory
-                        </Link>
+  return (
+    <nav className="bg-[#b8ada6] text-white shadow-lg">
+      <div className="w-full px-4">
+        <div className="flex items-center justify-between h-16">
 
-                        {/* Menu */}
-                        <div className="flex space-x-4">
-                            <Link
-                                to="/"
-                                className="px-3 py-2 rounded hover:bg-blue-700 transition flex items-center gap-2"
-                            >
-                                <i className="bi bi-house-fill"></i>
-                                หน้าแรก
-                            </Link>
-                            <Link
-                                to="/members"
-                                className="px-3 py-2 rounded hover:bg-blue-700 transition flex items-center gap-2"
-                            >
-                                <i className="bi bi-people-fill"></i>
-                                สมาชิก
-                            </Link>
-                            <Link
-                                to="/products"
-                                className="px-3 py-2 rounded hover:bg-blue-700 transition flex items-center gap-2"
-                            >
-                                <i className="bi bi-box-seam-fill"></i>
-                                สินค้า
-                            </Link>
-                            <Link
-                                to="/orders"
-                                className="px-3 py-2 rounded hover:bg-blue-700 transition flex items-center gap-2"
-                            >
-                                <i className="bi bi-cart-fill"></i>
-                                คำสั่งซื้อ
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </>
-    )
+          {/* Logo */}
+          <Link to="/" className="text-xl font-bold flex items-center gap-2 font-anuphan">
+            <i className="bi bi-database-fill"></i>
+            Dormitory
+          </Link>
+
+
+          {/* Auth Buttons */}
+          <div className="flex items-center space-x-3">
+            <Link
+              to="/login"
+              className="px-4 py-2 rounded-lg border border-white hover:bg-white hover:text-purple-600 transition font-medium " style={{ fontFamily: "Anuphan" }}
+            >
+              เข้าสู่ระบบ
+            </Link>
+
+            <Link
+              to="/register"
+              className="px-4 py-2 rounded-lg border border-white hover:bg-white hover:text-purple-600 transition font-medium" style={{ fontFamily: "Anuphan" }}
+            >
+              ลงทะเบียน
+            </Link>
+          </div>
+
+        </div>
+      </div>
+    </nav>
+  )
 }
 
 export default Navbar
