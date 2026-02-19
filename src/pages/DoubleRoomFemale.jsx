@@ -8,7 +8,7 @@ function RoomList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`http://localhost:4000/rooms?roomType=${type}`)
+    axios.get(`${import.meta.env.VITE_API_URL}/rooms?roomType=${type}`)
       .then(res => setRooms(res.data))
       .catch(err => console.log(err));
   }, [type]);

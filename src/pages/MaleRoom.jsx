@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar"
+import { useAuth } from "../context/AuthContext";
 const rooms = [
   {
     id: 1,
@@ -52,8 +53,22 @@ const rooms = [
 
 function MaleRoom() {
   const navigate = useNavigate();
+    const { user } = useAuth(); // ดึง user จาก Context
+      const handleClickRoom = (room) => {
+    if (!user) {
+      alert("กรุณาเข้าสู่ระบบก่อน");
+      return;
+    }
 
+    if (user.role === "admin") {
+      navigate(`/admin/room/${room.id}`, { state: room });
+    } else {
+      navigate(`/room/${room.id}`, { state: room });
+    }
+  };
+  
   return (
+    
     <div className="p-9 mt-10">
       <Sidebar />
       <h2 className="text-xl font-bold mb-4">ห้องพักแบบคู่ (ชาย)</h2>
