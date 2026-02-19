@@ -9,16 +9,30 @@ function MaleRoom() {
 
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/rooms")
-      .then((res) => res.json())
+    fetch(`${import.meta.env.VITE_API_URL}/rooms`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error("API error " + res.status);
+        return res.json();
+      })
       .then((data) => {
-        setRooms(data);
+        console.log("rooms api:", data);
+
+        if (Array.isArray(data)) {
+          setRooms(data);
+        } else {
+          setError("ข้อมูลห้องไม่ถูกต้อง");
+          setRooms([]);
+        }
+
         setLoading(false);
       })
       .catch((err) => {
         console.error("โหลดข้อมูลไม่สำเร็จ", err);
+        setError("ไม่สามารถโหลดข้อมูลห้องได้");
+        setRooms([]);
         setLoading(false);
       });
   }, []);
@@ -36,33 +50,46 @@ function MaleRoom() {
     }
   };
 
-  if (loading) return <p>กำลังโหลดข้อมูล...</p>;
+  if (loading) return <p className="p-8">กำลังโหลดข้อมูล...</p>;
+  if (error) return <p className="p-8 text-red-500">{error}</p>;
 
   return (
-    <div className="p-9 mt-10">
+    <div className="flex">
       <Sidebar />
-      <h2 className="text-xl font-bold mb-4">ห้องพักแบบคู่ (ชาย)</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {rooms.map((room) => (
-          <div
-            key={room.id}
-            className="border rounded-lg shadow hover:scale-105 transition cursor-pointer"
-            onClick={() => handleClickRoom(room)}
-          >
-            <img
-              src={`{import.meta.env.VITE_API_URL} uploads/${room.image}`}
-              alt={room.roomNo}
-              className="w-full h-48 object-cover rounded-t-lg"
-            />
+      <div className="p-8 w-full bg-gray-100 min-h-screen">
+        <h2 className="text-2xl font-bold mb-6 border-b pb-2">
+          ห้องพักแบบคู่ (ชาย)
+        </h2>
 
-            <div className="p-4">
-              <h3 className="font-bold text-lg">รหัสห้อง: {room.roomNo}</h3>
-              <p>{room.roomType}</p>
-              <p className="text-green-600 font-semibold">฿{room.price}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {rooms.slice(0, 8).map((room) => (
+            <div
+              key={room.id}
+              onClick={() => handleClickRoom(room)}
+              className="bg-white border border-gray-300 rounded-xl shadow-md 
+              hover:shadow-xl hover:scale-105 transition duration-300 cursor-pointer"
+            >
+              <img
+                src={`${import.meta.env.VITE_API_URL}/uploads/${room.image}`}
+                alt={room.roomNo}
+                className="w-full h-40 object-cover rounded-t-xl"
+              />
+
+              <div className="p-4">
+                <h3 className="text-lg font-bold">ห้อง {room.roomNo}</h3>
+                <p className="text-sm text-gray-600">{room.roomType}</p>
+                <p className="text-green-600 font-semibold mt-2">
+                  ราคา {room.price} บาท
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {rooms.length === 0 && (
+          <p className="mt-4 text-gray-500">ยังไม่มีข้อมูลห้อง</p>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-
+import Navbaradmin from "../../components/Navberadmin"
 function AddRoom() {
   const [room, setRoom] = useState({
     roomNo: "",
@@ -78,7 +78,10 @@ function AddRoom() {
   };
 
   return (
+    <><Navbaradmin /> 
+
     <div className="p-6 max-w-lg mx-auto">
+     
       <h2 className="text-xl font-bold mb-4">เพิ่มข้อมูลห้อง</h2>
 
       <form onSubmit={handleSubmit} className="space-y-3">
@@ -121,6 +124,7 @@ function AddRoom() {
         </button>
       </form>
     </div>
+    </>
   );
 }
 

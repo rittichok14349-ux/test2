@@ -25,18 +25,31 @@ const Login = () => {
     try {
       const data = await loginUser(formData.email, formData.password);
 
-      login(data);
+      // ✅ ตรวจว่ามี user จริงไหม
+      if (!data || !data.user) {
+        alert("ไม่พบข้อมูลผู้ใช้");
+        navigate("/login");
+        return;
+      }
+
+      login(data); // เก็บ token + user ลง context
 
       alert("เข้าสู่ระบบสำเร็จ 🎉");
 
-      if (data.user?.role === "ADMIN") {
+      // ✅ แยก role
+      if (data.user.role === "admin") {
         navigate("/admin/home");
+      } else if (data.user.role === "user") {
+        navigate("/home-user");
       } else {
-        navigate("/home");
+        // กรณี role ผิดปกติ
+        navigate("/login");
       }
+
     } catch (error) {
       console.error(error);
       alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+      navigate("/login");
     }
   };
 

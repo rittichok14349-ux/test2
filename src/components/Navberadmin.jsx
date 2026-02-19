@@ -24,7 +24,7 @@ const Navbar = () => {
             </Link>
 
             <Link
-              to="/register"
+              to="/members"
               className="px-4 py-2 rounded-lg border border-white hover:bg-white hover:text-purple-600 transition font-medium" style={{ fontFamily: "Anuphan" }}
             >
               ดูสมาชิก

@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import AdminHome from './pages/admin/AdminHome';
-import Members from './pages/Members';
+import Members from './pages/admin/Members';
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Sidebar from "./components/Sidebar";
@@ -14,7 +14,7 @@ import MaleRoom from './pages/MaleRoom';
 import FemaleRoom from './pages/FemaleRoom';
 import RoomDetail from "./pages/RoomDetail";
 import AddRoom from "./pages/admin/AddRoom";
-
+import HomeUser from "./pages/HomeUser";
 
 
 const App = () => {
@@ -28,6 +28,7 @@ const App = () => {
             <Routes>
               <Route path="/admin/home" element={<AdminHome />} />
               <Route path="/home" element={<Home />} />
+              <Route path="/home-user" element={<HomeUser />} />
               <Route path="/" element={<Home />} />
               <Route path="/members" element={<Members />} />
               <Route path="/register" element={<Register />} />
@@ -38,6 +39,7 @@ const App = () => {
               <Route path="/female" element={<FemaleRoom />} />
               <Route path="/room/:id" element={<RoomDetail />} />
               <Route path="/add-room" element={<AddRoom />} />
+
 
 
 
