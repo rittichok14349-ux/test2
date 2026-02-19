@@ -40,7 +40,7 @@ const Sidebar = () => {
         {/* Menu */}
         <ul className="p-4 space-y-3">
           <li>
-            <Link to="/admin/home" className="flex items-center gap-3 bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">
+            <Link to="/home" className="flex items-center gap-3 bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">
               <i className="bi bi-house"></i> หน้าหลัก
             </Link>
           </li>
