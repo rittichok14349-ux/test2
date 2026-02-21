@@ -1,7 +1,7 @@
 import React from 'react'
 import Sidebar from "../components/Sidebar"
 // แก้ไข Path ให้ตรงกับโฟลเดอร์จริง (สมมติว่า Navbar อยู่ที่เดียวกับ Sidebar)
-import NavbarUser from "../components/NavbarUser" 
+import NavbarUser from "../components/user/NavbarUser" 
 
 const Home = () => {
   return (

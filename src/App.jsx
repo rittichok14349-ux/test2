@@ -15,7 +15,11 @@ import FemaleRoom from './pages/FemaleRoom';
 import RoomDetail from "./pages/RoomDetail";
 import AddRoom from "./pages/admin/AddRoom";
 import HomeUser from "./pages/HomeUser";
-
+import AdminRooms from "./pages/admin/AdminRooms";
+import EditRoomAdmin from "./pages/admin/EditRoomAdmin";
+import DetailRoomAdmin from "./pages/admin/DetailRoomAdmin";
+import BookingPage from "./pages/Booking";
+import Profile from "./pages/Profile";  
 
 const App = () => {
   return (
@@ -39,8 +43,11 @@ const App = () => {
               <Route path="/female" element={<FemaleRoom />} />
               <Route path="/room/:id" element={<RoomDetail />} />
               <Route path="/add-room" element={<AddRoom />} />
-
-
+              <Route path="/admin/rooms" element={<AdminRooms />} />
+              <Route path="/admin/rooms/edit/:id" element={<EditRoomAdmin />} />
+              <Route path="/admin/rooms/:id" element={<DetailRoomAdmin />} />
+              <Route path="/booking" element={<BookingPage />} />
+              <Route path="/profile" element={<Profile />} />
 
 
 

@@ -1,22 +1,36 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Navbaradmin from "../../components/Navberadmin";
+import Navbaradmin from "../../components/admin/Navberadmin";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Members = () => {
   const [users, setUsers] = useState([]);
-  const { auth } = useAuth(); // ✅ ดึง auth (ไม่ใช่ user)
+  const { auth } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    // ✅ เช็ค role ก่อน
+    if (!auth || !auth.user) {
+      alert("กรุณาเข้าสู่ระบบ");
+      navigate("/login");
+      return;
+    }
+
+    if (auth.user.role !== "admin") {
+      alert("ไม่มีสิทธิ์เข้าถึงข้อมูล (Admin เท่านั้น)");
+      navigate("/");
+      return;
+    }
+
+
     fetchUsers();
-  }, []);
+  }, [auth]);
 
   const fetchUsers = async () => {
     try {
-      const token = auth?.token;
-
-      if (!token) {
-        alert("กรุณาเข้าสู่ระบบใหม่");
+      if (!auth?.token) {
+        alert("Token หาย");
         return;
       }
 
@@ -24,15 +38,17 @@ const Members = () => {
         `${import.meta.env.VITE_API_URL}/users`,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${auth.token}`,
+          },
         }
       );
 
-      setUsers(res.data);
+      console.log("users:", res.data);
+      setUsers(res.data.data);
+
     } catch (error) {
-      console.error("Error fetching users", error.response?.data || error.message);
-      alert("ไม่มีสิทธิ์เข้าถึงข้อมูล (Admin เท่านั้น)");
+      console.error("Error fetching users:", error.response?.data || error.message);
+      alert(error.response?.data?.message || "ดึงข้อมูลไม่สำเร็จ");
     }
   };
 
@@ -61,7 +77,9 @@ const Members = () => {
                 <td className="border p-2">{u.email}</td>
                 <td className="border p-2 text-center">{u.role}</td>
                 <td className="border p-2">
-                  {new Date(u.createdAt).toLocaleDateString()}
+                  {u.createdAt
+                    ? new Date(u.createdAt).toLocaleDateString()
+                    : "-"}
                 </td>
               </tr>
             ))}

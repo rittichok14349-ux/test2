@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbaradmin from "../../components/admin/Navberadmin";
 
-function AddRoom() {
+function EditRoom() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [room, setRoom] = useState({
     roomNo: "",
     roomType: "",
@@ -17,35 +21,40 @@ function AddRoom() {
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    fetchRoomById();
+  }, []);
+
+  // ดึงข้อมูลห้องเดิม
+  const fetchRoomById = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/rooms/${id}`);
+      setRoom(res.data);
+    } catch (error) {
+      alert("ไม่พบข้อมูลห้อง");
+    }
+  };
+
   // เปลี่ยนค่า input
   const handleChange = (e) => {
     setRoom({ ...room, [e.target.name]: e.target.value });
   };
 
-
-  // เลือกรูป + preview
+  // เลือกรูปใหม่ + preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImageFile(file);
-
     if (file) {
       setRoom({ ...room, image: URL.createObjectURL(file) });
     }
   };
 
-  // บันทึกข้อมูล
+  // บันทึกการแก้ไข
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (loading) return;
-
     if (!room.roomNo || !room.roomType || !room.price || !room.floor || !room.dormId) {
       alert("กรุณากรอกข้อมูลให้ครบ");
-      return;
-    }
-
-    if (!imageFile) {
-      alert("กรุณาเลือกรูปภาพ");
       return;
     }
 
@@ -57,37 +66,18 @@ function AddRoom() {
     formData.append("description", room.description);
     formData.append("status", room.status);
     formData.append("dormId", room.dormId);
-    formData.append("image", imageFile);
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
 
     try {
       setLoading(true);
-      await axios.post(`${import.meta.env.VITE_API_URL}/rooms`, formData);
-
-      alert("เพิ่มข้อมูลห้องสำเร็จ");
-
-      setRoom({
-        roomNo: "",
-        roomType: "",
-        price: "",
-        floor: "",
-        description: "",
-        status: "AVAILABLE",
-        dormId: "",
-        image: ""
-      });
-
-      setImageFile(null);
-
+      await axios.put(`${import.meta.env.VITE_API_URL}/rooms/${id}`, formData);
+      alert("แก้ไขข้อมูลห้องสำเร็จ");
+      navigate("/admin/rooms");
     } catch (error) {
-      console.error("ADD ROOM ERROR:", error);
-
-      // ถ้ามี message จาก backend
-      if (error.response && error.response.data && error.response.data.message) {
-        alert("เพิ่มห้องไม่สำเร็จ: " + error.response.data.message);
-      } else {
-        alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
-      }
-
+      alert("แก้ไขห้องไม่สำเร็จ");
     } finally {
       setLoading(false);
     }
@@ -101,16 +91,16 @@ function AddRoom() {
         <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8">
 
           <h2 className="text-2xl font-bold mb-6 text-gray-800">
-            ➕ เพิ่มข้อมูลห้อง
+            🛠 แก้ไขข้อมูลห้อง
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
 
-            {/* รูป Preview */}
+            {/* รูปภาพ Preview */}
             <div className="flex justify-center">
               <img
                 src={room.image || "https://via.placeholder.com/300x180"}
-                alt="preview"
+                alt="room"
                 className="w-72 h-44 object-cover rounded-lg shadow"
               />
             </div>
@@ -198,7 +188,7 @@ function AddRoom() {
 
             {/* เลือกรูป */}
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">เลือกรูป</label>
+              <label className="block text-sm font-medium text-gray-600 mb-1">เลือกรูปใหม่</label>
               <input
                 type="file"
                 accept="image/*"
@@ -224,31 +214,21 @@ function AddRoom() {
               <button
                 type="submit"
                 disabled={loading}
-                className={`flex-1 py-2 rounded-lg text-white font-semibold transition ${loading
-                  ? "bg-gray-400"
-                  : "bg-green-600 hover:bg-green-700"
-                  }`}
+                className={`flex-1 py-2 rounded-lg text-white font-semibold transition ${
+                  loading
+                    ? "bg-gray-400"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
               >
-                {loading ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
+                {loading ? "กำลังบันทึก..." : "บันทึกการแก้ไข"}
               </button>
 
               <button
-                type="reset"
-                onClick={() =>
-                  setRoom({
-                    roomNo: "",
-                    roomType: "",
-                    price: "",
-                    floor: "",
-                    description: "",
-                    status: "AVAILABLE",
-                    dormId: "",
-                    image: ""
-                  })
-                }
+                type="button"
+                onClick={() => navigate("/admin/rooms")}
                 className="flex-1 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
               >
-                ล้างข้อมูล
+                ยกเลิก
               </button>
             </div>
 
@@ -259,4 +239,4 @@ function AddRoom() {
   );
 }
 
-export default AddRoom;
+export default EditRoom;

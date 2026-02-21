@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Sidebar = () => {
+const SidebarUser = () => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -96,4 +96,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default SidebarUser;
