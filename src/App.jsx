@@ -14,7 +14,7 @@ import MaleRoom from './pages/MaleRoom';
 import FemaleRoom from './pages/FemaleRoom';
 import RoomDetail from "./pages/RoomDetail";
 import AddRoom from "./pages/admin/AddRoom";
-import HomeUser from "./pages/HomeUser";
+import HomeUser from "./pages/user/HomeUser";
 import AdminRooms from "./pages/admin/AdminRooms";
 import EditRoomAdmin from "./pages/admin/EditRoomAdmin";
 import DetailRoomAdmin from "./pages/admin/DetailRoomAdmin";
@@ -48,6 +48,7 @@ const App = () => {
               <Route path="/admin/rooms/:id" element={<DetailRoomAdmin />} />
               <Route path="/booking" element={<BookingPage />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="Sidebar" element={<Sidebar />} />
 
 
 
