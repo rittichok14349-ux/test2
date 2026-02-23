@@ -25,6 +25,9 @@ const Login = () => {
     try {
       const data = await loginUser(formData.email, formData.password);
 
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
       // ✅ ตรวจว่ามี user จริงไหม
       if (!data || !data.user) {
         alert("ไม่พบข้อมูลผู้ใช้");
@@ -70,17 +73,17 @@ const Login = () => {
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
-</div>
+          </div>
 
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
-          
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            onChange={handleChange}
+            required
+            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          />
+
           <button
             type="submit"
             className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition font-semibold"

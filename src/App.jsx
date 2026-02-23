@@ -20,6 +20,7 @@ import EditRoomAdmin from "./pages/admin/EditRoomAdmin";
 import DetailRoomAdmin from "./pages/admin/DetailRoomAdmin";
 import BookingPage from "./pages/Booking";
 import Profile from "./pages/Profile";  
+import MyBookings from "./pages/Mybookings";
 
 const App = () => {
   return (
@@ -41,15 +42,15 @@ const App = () => {
               <Route path="/double-room-female" element={<FemaleDormRoom />} />
               <Route path="/male" element={<MaleRoom />} />
               <Route path="/female" element={<FemaleRoom />} />
-              <Route path="/room/:id" element={<RoomDetail />} />
+              <Route path="/rooms/:id" element={<RoomDetail />} />
               <Route path="/add-room" element={<AddRoom />} />
               <Route path="/admin/rooms" element={<AdminRooms />} />
               <Route path="/admin/rooms/edit/:id" element={<EditRoomAdmin />} />
               <Route path="/admin/rooms/:id" element={<DetailRoomAdmin />} />
               <Route path="/booking" element={<BookingPage />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="Sidebar" element={<Sidebar />} />
-
+              <Route path="/Sidebar" element={<Sidebar />} />
+              <Route path="/my-bookings" element={<MyBookings />} />
 
 
 

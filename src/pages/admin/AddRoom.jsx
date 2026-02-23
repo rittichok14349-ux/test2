@@ -8,6 +8,8 @@ function AddRoom() {
     roomType: "",
     price: "",
     floor: "",
+    description : "",
+    image: null,
 
   });
 
@@ -36,12 +38,12 @@ function AddRoom() {
 
     if (loading) return;
 
-    if (!room.roomNo || !room.roomType || !room.price || !room.floor) {
+    if (!room.roomNo || !room.roomType || !room.price || !room.floor || !room.description) {
       alert("กรุณากรอกข้อมูลให้ครบ");
       return;
     }
     const token = localStorage.getItem("token");
-
+    console.log("TOKEN:", token);
     // if (!imageFile) {
     //   alert("กรุณาเลือกรูปภาพ");
     //   return;
@@ -52,6 +54,7 @@ function AddRoom() {
     formData.append("roomType", room.roomType);
     formData.append("price", room.price);
     formData.append("floor", room.floor);
+    formData.append("description", room.description);
     formData.append("image", imageFile); // ✅ สำคัญ
 
 
@@ -77,6 +80,8 @@ function AddRoom() {
         roomType: "",
         price: "",
         floor: "",
+        description : "",
+        image: null
 
       });
 
@@ -176,6 +181,15 @@ function AddRoom() {
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
+            <input
+              type="text"
+              name="description"
+              value={room.description}
+              placeholder="รายละเอียด"
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
               {/* ปุ่ม */}
@@ -199,6 +213,8 @@ function AddRoom() {
                       roomType: "",
                       price: "",
                       floor: "",
+                      description : "",
+                      image: null,
 
                     })
                   }
