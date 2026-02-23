@@ -8,10 +8,7 @@ function AddRoom() {
     roomType: "",
     price: "",
     floor: "",
-    description: "",
-    status: "AVAILABLE",
-    dormId: "",
-    image: ""
+
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -39,29 +36,39 @@ function AddRoom() {
 
     if (loading) return;
 
-    if (!room.roomNo || !room.roomType || !room.price || !room.floor || !room.dormId) {
+    if (!room.roomNo || !room.roomType || !room.price || !room.floor) {
       alert("กรุณากรอกข้อมูลให้ครบ");
       return;
     }
+    const token = localStorage.getItem("token");
 
-    if (!imageFile) {
-      alert("กรุณาเลือกรูปภาพ");
-      return;
-    }
+    // if (!imageFile) {
+    //   alert("กรุณาเลือกรูปภาพ");
+    //   return;
+    // }
 
     const formData = new FormData();
     formData.append("roomNo", room.roomNo);
     formData.append("roomType", room.roomType);
     formData.append("price", room.price);
     formData.append("floor", room.floor);
-    formData.append("description", room.description);
-    formData.append("status", room.status);
-    formData.append("dormId", room.dormId);
-    formData.append("image", imageFile);
+    formData.append("image", imageFile); // ✅ สำคัญ
+
+
 
     try {
       setLoading(true);
-      await axios.post(`${import.meta.env.VITE_API_URL}/rooms`, formData);
+
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/rooms`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       alert("เพิ่มข้อมูลห้องสำเร็จ");
 
@@ -70,10 +77,7 @@ function AddRoom() {
         roomType: "",
         price: "",
         floor: "",
-        description: "",
-        status: "AVAILABLE",
-        dormId: "",
-        image: ""
+
       });
 
       setImageFile(null);
@@ -97,159 +101,112 @@ function AddRoom() {
     <>
       <Navbaradmin />
 
-      <div className="min-h-screen bg-gray-100 py-10 px-4">
-        <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600">
+        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
 
           <h2 className="text-2xl font-bold mb-6 text-gray-800">
             ➕ เพิ่มข้อมูลห้อง
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-7">
 
             {/* รูป Preview */}
-            <div className="flex justify-center">
+            <div className="flex flex-col items-center gap-3">
+
               <img
                 src={room.image || "https://via.placeholder.com/300x180"}
                 alt="preview"
-                className="w-72 h-44 object-cover rounded-lg shadow"
+                className="w-72 h-44 object-cover rounded-lg shadow border"
               />
-            </div>
 
+              {/* ซ่อน input file */}
+              <label className="cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+                เลือกรูปห้อง
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
+
+            </div>
+            {/* ✅ เพิ่มตรงนี้ */}
+
+
+            <div className="flex gap-2">
+
+              <input
+                type="roomNo"
+                name="roomNo"
+                value={room.roomNo}
+                placeholder="รหัสห้อง"
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              />
+              <select
+                name="roomType"
+                value={room.roomType}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              >
+                <option value="">-- เลือกประเภทห้อง --</option>
+                <option value="MALE">ห้องชาย</option>
+                <option value="FEMALE">ห้องหญิง</option>
+
+              </select>
+            </div>
+            <input
+              type="number"
+              name="price"
+              value={room.price}
+              placeholder="ราคาห้อง"
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            />
+            <input
+              type="number"
+              name="floor"
+              value={room.floor}
+              placeholder="ชั้น"
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-              {/* รหัสห้อง */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">รหัสห้อง</label>
-                <input
-                  name="roomNo"
-                  value={room.roomNo}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-                />
-              </div>
-
-              {/* ประเภทห้อง */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">ประเภทห้อง</label>
-                <select
-                  name="roomType"
-                  value={room.roomType}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
+              {/* ปุ่ม */}
+              <div className="flex gap-4">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`flex-1 py-2 rounded-lg text-white font-semibold transition ${loading
+                    ? "bg-gray-400"
+                    : "bg-green-600 hover:bg-green-700"
+                    }`}
                 >
-                  <option value="">เลือกประเภท</option>
-                  <option value="คู่ชาย">คู่ชาย</option>
-                  <option value="คู่หญิง">คู่หญิง</option>
-                  <option value="รวมชาย">รวมชาย</option>
-                  <option value="รวมหญิง">รวมหญิง</option>
-                </select>
-              </div>
+                  {loading ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
+                </button>
 
-              {/* ราคา */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">ราคา</label>
-                <input
-                  type="number"
-                  name="price"
-                  value={room.price}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-                />
-              </div>
+                <button
+                  type="reset"
+                  onClick={() =>
+                    setRoom({
+                      roomNo: "",
+                      roomType: "",
+                      price: "",
+                      floor: "",
 
-              {/* ชั้น */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">ชั้น</label>
-                <input
-                  type="number"
-                  name="floor"
-                  value={room.floor}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-                />
-              </div>
-
-              {/* สถานะ */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">สถานะ</label>
-                <select
-                  name="status"
-                  value={room.status}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
+                    })
+                  }
+                  className="flex-1 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
                 >
-                  <option value="AVAILABLE">ว่าง</option>
-                  <option value="FULL">เต็ม</option>
-                </select>
+                  ล้างข้อมูล
+                </button>
               </div>
-
-              {/* Dorm ID */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Dorm ID</label>
-                <input
-                  type="number"
-                  name="dormId"
-                  value={room.dormId}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-                />
-              </div>
-            </div>
-
-            {/* เลือกรูป */}
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">เลือกรูป</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="w-full border rounded-lg p-2"
-              />
-            </div>
-
-            {/* รายละเอียด */}
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">รายละเอียด</label>
-              <textarea
-                name="description"
-                value={room.description}
-                onChange={handleChange}
-                rows="4"
-                className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-              />
-            </div>
-
-            {/* ปุ่ม */}
-            <div className="flex gap-4">
-              <button
-                type="submit"
-                disabled={loading}
-                className={`flex-1 py-2 rounded-lg text-white font-semibold transition ${loading
-                  ? "bg-gray-400"
-                  : "bg-green-600 hover:bg-green-700"
-                  }`}
-              >
-                {loading ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
-              </button>
-
-              <button
-                type="reset"
-                onClick={() =>
-                  setRoom({
-                    roomNo: "",
-                    roomType: "",
-                    price: "",
-                    floor: "",
-                    description: "",
-                    status: "AVAILABLE",
-                    dormId: "",
-                    image: ""
-                  })
-                }
-                className="flex-1 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
-              >
-                ล้างข้อมูล
-              </button>
             </div>
 
           </form>

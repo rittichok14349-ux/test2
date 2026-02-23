@@ -37,9 +37,9 @@ const Login = () => {
       alert("เข้าสู่ระบบสำเร็จ 🎉");
 
       // ✅ แยก role
-      if (data.user.role === "admin") {
+      if (data.user.role === "ADMIN") {
         navigate("/admin/home");
-      } else if (data.user.role === "user") {
+      } else if (data.user.role === "USER") {
         navigate("/home-user");
       } else {
         // กรณี role ผิดปกติ
@@ -54,35 +54,33 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-purple-100">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600">
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-purple-600 mb-6">
           เข้าสู่ระบบ
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block mb-1 font-medium">อีเมล</label>
+          <div className="flex gap-2">
             <input
               type="email"
               name="email"
-              required
+              placeholder="Email"
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+              required
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
-          </div>
+</div>
 
-          <div>
-            <label className="block mb-1 font-medium">รหัสผ่าน</label>
             <input
               type="password"
               name="password"
-              required
+              placeholder="Password"
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+              required
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
-          </div>
-
+          
           <button
             type="submit"
             className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition font-semibold"
