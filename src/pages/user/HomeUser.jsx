@@ -2,11 +2,12 @@ import React from 'react'
 import Sidebar from "../../components/Sidebar"
 // แก้ไข Path ให้ตรงกับโฟลเดอร์จริง (สมมติว่า Navbar อยู่ที่เดียวกับ Sidebar)
 import NavbarUser from "../../components/user/NavbarUser" 
+import SidebarUser from '../../components/user/SidebarUser'
 
 const Home = () => {
   return (
     <div className="flex min-h-screen"> {/* เพิ่ม flex ตรงนี้เพื่อให้ Sidebar กับ Content อยู่ข้างกัน */}
-      <Sidebar />
+      <SidebarUser />
 
       {/* Main Content */}
       <div className="flex-1 min-h-screen relative bg-cover bg-center"

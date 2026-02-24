@@ -1,53 +1,55 @@
 import { useState } from "react";
 import axios from "axios";
 import Navbaradmin from "../../components/admin/Navberadmin";
+import { jwtDecode } from "jwt-decode";
+
+
 
 function AddRoom() {
+
+  const token = localStorage.getItem("token");
+  const decoded = token ? jwtDecode(token) : null;
+
+  console.log("DECODED TOKEN:", decoded);
+
+  // ✅ กัน user ที่ไม่ใช่ admin
+  if (!decoded || decoded.role !== "ADMIN") {
+    alert("คุณไม่มีสิทธิ์เข้าหน้านี้ (Admin เท่านั้น)");
+    return null;
+  }
+
   const [room, setRoom] = useState({
     roomNo: "",
     roomType: "",
     price: "",
     floor: "",
-    description : "",
+    description: "",
     image: null,
-
   });
 
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // เปลี่ยนค่า input
   const handleChange = (e) => {
     setRoom({ ...room, [e.target.name]: e.target.value });
   };
 
-
-  // เลือกรูป + preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImageFile(file);
-
     if (file) {
       setRoom({ ...room, image: URL.createObjectURL(file) });
     }
   };
 
-  // บันทึกข้อมูล
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (loading) return;
 
     if (!room.roomNo || !room.roomType || !room.price || !room.floor || !room.description) {
       alert("กรุณากรอกข้อมูลให้ครบ");
       return;
     }
-    const token = localStorage.getItem("token");
-    console.log("TOKEN:", token);
-    // if (!imageFile) {
-    //   alert("กรุณาเลือกรูปภาพ");
-    //   return;
-    // }
 
     const formData = new FormData();
     formData.append("roomNo", room.roomNo);
@@ -55,20 +57,16 @@ function AddRoom() {
     formData.append("price", room.price);
     formData.append("floor", room.floor);
     formData.append("description", room.description);
-    formData.append("image", imageFile); // ✅ สำคัญ
-
-
+    formData.append("image", imageFile);
 
     try {
       setLoading(true);
-
       await axios.post(
         `${import.meta.env.VITE_API_URL}/rooms`,
         formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
           },
         }
       );
@@ -80,9 +78,8 @@ function AddRoom() {
         roomType: "",
         price: "",
         floor: "",
-        description : "",
-        image: null
-
+        description: "",
+        image: null,
       });
 
       setImageFile(null);
@@ -90,13 +87,11 @@ function AddRoom() {
     } catch (error) {
       console.error("ADD ROOM ERROR:", error);
 
-      // ถ้ามี message จาก backend
-      if (error.response && error.response.data && error.response.data.message) {
+      if (error.response?.data?.message) {
         alert("เพิ่มห้องไม่สำเร็จ: " + error.response.data.message);
       } else {
         alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
       }
-
     } finally {
       setLoading(false);
     }
@@ -213,7 +208,7 @@ function AddRoom() {
                       roomType: "",
                       price: "",
                       floor: "",
-                      description : "",
+                      description: "",
                       image: null,
 
                     })

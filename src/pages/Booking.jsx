@@ -15,49 +15,39 @@ const BookingPage = () => {
   const [filterType, setFilterType] = useState("all");
   const [filterGender, setFilterGender] = useState("all");
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
-    const userRole = localStorage.getItem("role");
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  const userData = localStorage.getItem("user");
 
-  console.log("Current Role from Storage:", userRole); // ดูใน Console ว่าค่าออกมาเป็นอะไร
-  setRole(userRole);
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-    try {
-    const user = JSON.parse(userData); // แปลงจาก String กลับเป็น Object
-    setRole(user.role); // เซ็ตค่า role จากใน object user
-    console.log("Current Role from User Object:", user.role);
+  if (!token || !userData) {
+    navigate("/login");
+    return;
+  }
+
+  try {
+    const user = JSON.parse(userData);
+    console.log("ROLE =", user.role);
+    setRole(user.role); // ใช้ค่าเดียวพอ
   } catch (e) {
     console.error("Parse user error", e);
   }
 
-    setRole(userRole);
-
-    fetch(`${import.meta.env.VITE_API_URL}/rooms`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+  fetch(`${import.meta.env.VITE_API_URL}/rooms`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then(res => res.json())
+    .then(data => {
+      setRooms(data);
+      setLoading(false);
     })
-      .then(async (res) => {
-        if (!res.ok) throw new Error("API error " + res.status);
-        return res.json();
-      })
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setRooms(data);
-        } else {
-          setError("ข้อมูลห้องไม่ถูกต้อง");
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError("ไม่สามารถโหลดข้อมูลห้องได้");
-        setLoading(false);
-      });
-  }, [navigate]);
+    .catch(() => {
+      setError("ไม่สามารถโหลดข้อมูลห้องได้");
+      setLoading(false);
+    });
+
+}, [navigate]);
 
   const filteredRooms = rooms.filter((room) => {
     const matchType = filterType === "all" || room.type === filterType;

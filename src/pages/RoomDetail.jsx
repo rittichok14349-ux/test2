@@ -86,7 +86,7 @@ const userId = decoded?.userId;
 
             {/* Image */}
             <div>
-              {room.image_url ? (
+              {room.image ? (
                 <img
                   src={`${import.meta.env.VITE_API_URL}/uploads/${room.image}`}
                   alt={`Room ${room.roomNo}`}
