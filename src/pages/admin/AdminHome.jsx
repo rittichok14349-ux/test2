@@ -1,12 +1,12 @@
 import React from 'react'
-import Sidebar from "../../components/Sidebar"
+import Sidebaradmin from "../../components/admin/SidebarAdmin"
 import Navbaradmin from "../../components/admin/Navberadmin"
 
 const Home = () => {
     return (
         // ใช้ flex เพื่อให้ Sidebar อยู่ซ้าย และเนื้อหาที่เหลืออยู่ขวา
         <div className="flex min-h-screen"> 
-            <Sidebar />
+            <Sidebaradmin />
 
             {/* ส่วนเนื้อหาหลัก (Main Content Area) */}
             <div className="flex-1 flex flex-col min-h-screen relative bg-cover bg-center"

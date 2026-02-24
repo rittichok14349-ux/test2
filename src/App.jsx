@@ -19,8 +19,8 @@ import AdminRooms from "./pages/admin/AdminRooms";
 import EditRoomAdmin from "./pages/admin/EditRoomAdmin";
 import DetailRoomAdmin from "./pages/admin/DetailRoomAdmin";
 import BookingPage from "./pages/Booking";
-import Profile from "./pages/Profile";  
 import MyBookings from "./pages/Mybookings";
+
 
 const App = () => {
   return (
@@ -48,10 +48,10 @@ const App = () => {
               <Route path="/admin/rooms/edit/:id" element={<EditRoomAdmin />} />
               <Route path="/admin/rooms/:id" element={<DetailRoomAdmin />} />
               <Route path="/booking" element={<BookingPage />} />
-              <Route path="/profile" element={<Profile />} />
+              
               <Route path="/Sidebar" element={<Sidebar />} />
               <Route path="/my-bookings" element={<MyBookings />} />
-
+              
 
 
             </Routes>

@@ -74,11 +74,7 @@ const Sidebar = () => {
               </Link>
             </li>
 
-            <li>
-              <Link to="/payment" onClick={() => setOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700">
-                <i className="bi bi-credit-card"></i> แจ้งชำระเงิน
-              </Link>
-            </li>
+            
           </ul>
         </nav>
 

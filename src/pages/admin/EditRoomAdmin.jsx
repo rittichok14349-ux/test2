@@ -3,7 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbaradmin from "../../components/admin/Navberadmin";
 
-function EditRoom() {
+
+
+function EditRoomAdmin() {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -13,9 +15,7 @@ function EditRoom() {
     price: "",
     floor: "",
     description: "",
-    status: "AVAILABLE",
-    dormId: "",
-    image: ""
+    image: "",
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -25,199 +25,189 @@ function EditRoom() {
     fetchRoomById();
   }, []);
 
-  // ดึงข้อมูลห้องเดิม
   const fetchRoomById = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/rooms/${id}`);
-      setRoom(res.data);
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/rooms/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setRoom({
+        roomNo: res.data.roomNo || "",
+        roomType: res.data.roomType || "",
+        price: res.data.price || "",
+        floor: res.data.floor || "",
+        description: res.data.description || "",
+        image: res.data.image || "",
+      });
     } catch (error) {
+      console.error(error);
       alert("ไม่พบข้อมูลห้อง");
     }
   };
 
-  // เปลี่ยนค่า input
   const handleChange = (e) => {
-    setRoom({ ...room, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setRoom({ ...room, [name]: value });
   };
 
-  // เลือกรูปใหม่ + preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImageFile(file);
+
     if (file) {
-      setRoom({ ...room, image: URL.createObjectURL(file) });
+      setRoom({
+        ...room,
+        image: URL.createObjectURL(file),
+      });
     }
   };
 
-  // บันทึกการแก้ไข
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!room.roomNo || !room.roomType || !room.price || !room.floor || !room.dormId) {
-      alert("กรุณากรอกข้อมูลให้ครบ");
-      return;
-    }
 
     const formData = new FormData();
     formData.append("roomNo", room.roomNo);
     formData.append("roomType", room.roomType);
-    formData.append("price", room.price);
-    formData.append("floor", room.floor);
+    formData.append("price", Number(room.price));
+    formData.append("floor", Number(room.floor));
     formData.append("description", room.description);
-    formData.append("status", room.status);
-    formData.append("dormId", room.dormId);
 
     if (imageFile) {
       formData.append("image", imageFile);
     }
 
+    // debug ดูค่าที่ส่งไป
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
     try {
       setLoading(true);
-      await axios.put(`${import.meta.env.VITE_API_URL}/rooms/${id}`, formData);
+      const token = localStorage.getItem("token");
+
+      await axios.put(
+        `${import.meta.env.VITE_API_URL}/rooms/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
       alert("แก้ไขข้อมูลห้องสำเร็จ");
       navigate("/admin/rooms");
     } catch (error) {
-      alert("แก้ไขห้องไม่สำเร็จ");
+      console.error("Backend error:", error.response?.data || error.message);
+      alert("แก้ไขข้อมูลห้องไม่สำเร็จ");
     } finally {
       setLoading(false);
     }
   };
 
+  const imagePreview = room.image
+    ? room.image.startsWith("blob:")
+      ? room.image
+      : `${import.meta.env.VITE_API_URL}/uploads/${room.image}`
+    : "/no-image.png";
+
   return (
     <>
       <Navbaradmin />
 
-      <div className="min-h-screen bg-gray-100 py-10 px-4">
-        <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8">
-
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600">
+        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
           <h2 className="text-2xl font-bold mb-6 text-gray-800">
-            🛠 แก้ไขข้อมูลห้อง
+            ✏️ แก้ไขข้อมูลห้อง
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-
-            {/* รูปภาพ Preview */}
-            <div className="flex justify-center">
+          <form onSubmit={handleSubmit} className="space-y-7">
+            <div className="flex flex-col items-center gap-3">
               <img
-                src={room.image || "https://via.placeholder.com/300x180"}
-                alt="room"
-                className="w-72 h-44 object-cover rounded-lg shadow"
+                src={imagePreview}
+                alt="preview"
+                className="w-72 h-44 object-cover rounded-lg shadow border"
               />
+
+              <label className="cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+                เลือกรูปห้อง
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-              {/* รหัสห้อง */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">รหัสห้อง</label>
-                <input
-                  name="roomNo"
-                  value={room.roomNo}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-                />
-              </div>
-
-              {/* ประเภทห้อง */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">ประเภทห้อง</label>
-                <select
-                  name="roomType"
-                  value={room.roomType}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-                >
-                  <option value="">เลือกประเภท</option>
-                  <option value="คู่ชาย">คู่ชาย</option>
-                  <option value="คู่หญิง">คู่หญิง</option>
-                  <option value="รวมชาย">รวมชาย</option>
-                  <option value="รวมหญิง">รวมหญิง</option>
-                </select>
-              </div>
-
-              {/* ราคา */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">ราคา</label>
-                <input
-                  type="number"
-                  name="price"
-                  value={room.price}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-                />
-              </div>
-
-              {/* ชั้น */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">ชั้น</label>
-                <input
-                  type="number"
-                  name="floor"
-                  value={room.floor}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-                />
-              </div>
-
-              {/* สถานะ */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">สถานะ</label>
-                <select
-                  name="status"
-                  value={room.status}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-                >
-                  <option value="AVAILABLE">ว่าง</option>
-                  <option value="FULL">เต็ม</option>
-                </select>
-              </div>
-
-              {/* Dorm ID */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Dorm ID</label>
-                <input
-                  type="number"
-                  name="dormId"
-                  value={room.dormId}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
-                />
-              </div>
-            </div>
-
-            {/* เลือกรูป */}
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">เลือกรูปใหม่</label>
+            <div className="flex gap-2">
               <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="w-full border rounded-lg p-2"
-              />
-            </div>
-
-            {/* รายละเอียด */}
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">รายละเอียด</label>
-              <textarea
-                name="description"
-                value={room.description}
+                type="text"
+                name="roomNo"
+                value={room.roomNo}
+                placeholder="รหัสห้อง"
                 onChange={handleChange}
-                rows="4"
-                className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
+                required
+                className="w-full px-3 py-2 border rounded-lg"
               />
+
+              <select
+                name="roomType"
+                value={room.roomType}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border rounded-lg"
+              >
+                <option value="">-- เลือกประเภทห้อง --</option>
+                <option value="MALE">ห้องชาย</option>
+                <option value="FEMALE">ห้องหญิง</option>
+              </select>
             </div>
 
-            {/* ปุ่ม */}
+            <input
+              type="number"
+              name="price"
+              value={room.price}
+              placeholder="ราคาห้อง"
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+
+            <input
+              type="number"
+              name="floor"
+              value={room.floor}
+              placeholder="ชั้น"
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+
+            <input
+              type="text"
+              name="description"
+              value={room.description}
+              placeholder="รายละเอียด"
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+
             <div className="flex gap-4">
               <button
                 type="submit"
                 disabled={loading}
-                className={`flex-1 py-2 rounded-lg text-white font-semibold transition ${
-                  loading
-                    ? "bg-gray-400"
-                    : "bg-blue-600 hover:bg-blue-700"
+                className={`flex-1 py-2 rounded-lg text-white ${
+                  loading ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"
                 }`}
               >
                 {loading ? "กำลังบันทึก..." : "บันทึกการแก้ไข"}
@@ -231,7 +221,6 @@ function EditRoom() {
                 ยกเลิก
               </button>
             </div>
-
           </form>
         </div>
       </div>
@@ -239,4 +228,4 @@ function EditRoom() {
   );
 }
 
-export default EditRoom;
+export default EditRoomAdmin;

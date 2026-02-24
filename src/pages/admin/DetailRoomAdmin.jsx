@@ -10,27 +10,36 @@ function DetailRoomAdmin() {
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
 
-
-  // โหลดข้อมูลห้องจาก backend
   useEffect(() => {
     fetchRoomById();
   }, []);
 
   const fetchRoomById = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/rooms/${id}`);
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/rooms/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       setRoom(res.data);
     } catch (error) {
+      console.error(error);
       alert("ไม่พบข้อมูลห้อง");
     } finally {
       setLoading(false);
     }
-
   };
-    const statusMap = {
-  AVAILABLE: "ว่าง",
-  FULL: "เต็ม",
-};
+
+  const statusMap = {
+    AVAILABLE: "ว่าง",
+    OCCUPIED: "ไม่ว่าง",
+  };
 
   if (loading) {
     return <p className="text-center mt-10">กำลังโหลดข้อมูล...</p>;
@@ -40,12 +49,16 @@ function DetailRoomAdmin() {
     return <p className="text-center mt-10">ไม่พบข้อมูลห้อง</p>;
   }
 
+  const imageUrl = room.image
+    ? `${import.meta.env.VITE_API_URL}/uploads/${room.image}`
+    : "https://via.placeholder.com/300x180";
+
   return (
     <>
       <Navbaradmin />
 
-      <div className="min-h-screen bg-gray-100 py-10 px-4">
-        <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600">
+        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-xl">
 
           <h2 className="text-2xl font-bold mb-6 text-gray-800">
             🏠 รายละเอียดห้อง
@@ -53,11 +66,10 @@ function DetailRoomAdmin() {
 
           {/* รูปภาพ */}
           <div className="flex justify-center mb-6">
-           
             <img
-              src={`${import.meta.env.VITE_API_URL}/uploads/${room.image}`}
+              src={imageUrl}
               alt="room"
-              className="w-72 h-44 object-cover rounded-lg shadow"
+              className="w-80 h-48 object-cover rounded-lg shadow border"
             />
           </div>
 
@@ -87,20 +99,17 @@ function DetailRoomAdmin() {
             <div>
               <label className="text-sm text-gray-500">สถานะ</label>
               <span
-                className={`ml-2 inline-block px-4 py-1 rounded-full text-sm font-medium ${
+                className={`inline-block mt-1 px-4 py-1 rounded-full text-sm font-medium ${
                   room.status === "AVAILABLE"
                     ? "bg-green-100 text-green-700"
                     : "bg-red-100 text-red-700"
                 }`}
-              > {statusMap[room.status] || room.status}
-                
+              >
+                {statusMap[room.status] || room.status}
               </span>
             </div>
 
-            <div>
-              <label className="text-sm text-gray-500"> อาคาร ที่</label>
-              <p className="font-semibold">{room.dormId}</p>
-            </div>
+            
           </div>
 
           {/* รายละเอียด */}

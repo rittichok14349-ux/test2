@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const Navbar = () => {
+const NavbarUser = () => {
   return (
     <nav className="bg-[#b8ada6] text-white shadow-lg">
       <div className="w-full px-4">
@@ -21,4 +21,4 @@ const Navbar = () => {
   )
 }
 
-export default Navbar
+export default NavbarUser
